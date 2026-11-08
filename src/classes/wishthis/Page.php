@@ -693,15 +693,6 @@ class Page
                                 <i class="github icon"></i>
                                 <div class="content"><?= __('GitHub') ?></div>
                             </a>
-
-                            <a class="item"
-                               href="https://explore.transifex.com/wishthis/wishthis/"
-                               target="_blank"
-                               title="<?= __('Transifex') ?>"
-                            >
-                                <i class="language icon"></i>
-                                <div class="content"><?= __('Transifex') ?></div>
-                            </a>
                         </div>
                     </div>
 
