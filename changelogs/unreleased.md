@@ -23,6 +23,7 @@
 
 ### Fixed
 
+-   Profile page crashing after the preferences section (SQL syntax error), which made the account tab unusable
 -   Password reset crashing for unknown email addresses and manipulated reset links
 -   Password reset not possible when user registration is disabled
 -   Links in emails using `http` behind a reverse proxy
