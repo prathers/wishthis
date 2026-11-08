@@ -176,7 +176,10 @@ if (isset($_POST['email'], $_POST['password']) && !empty($_POST['planet']) && (!
          */
         if ($userRegistered) {
             $user_id       = $database->lastInsertID();
-            $wishlist_name = addslashes(filter_var(__('My hopes and dreams'), FILTER_SANITIZE_SPECIAL_CHARS));
+            /** `__()` returns HTML entities; store the name like the wishlists API does */
+            $wishlist_name = Sanitiser::getTitle(
+                \html_entity_decode(__('My hopes and dreams'), \ENT_QUOTES | \ENT_HTML5, 'UTF-8')
+            );
             $wishlist_hash = sha1(\time() . $user_id . $wishlist_name);
 
             $database
