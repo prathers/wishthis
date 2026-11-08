@@ -88,3 +88,48 @@ msgstr "Afsender"
 #, php-format
 msgid "To use a different sender, define %s in %s. The domain of the sender should have SPF and DKIM set up, otherwise emails may end up as spam."
 msgstr "Definér %s i %s for at bruge en anden afsender. Afsenderens domæne bør have SPF og DKIM sat op, ellers kan e-mails havne i spam."
+
+# Corrections to upstream's Danish wording (moved from da_DK.po, 2026-11-08)
+
+msgid "Hello,"
+msgstr "Hej med dig"
+
+msgid "Contribute"
+msgstr "Bidrag"
+
+msgid "Hey, you"
+msgstr "Hej, du"
+
+msgid "source code"
+msgstr "kildekode"
+
+msgid "Account details"
+msgstr "Kontodetaljer"
+
+msgid "Mercury"
+msgstr "Merkur"
+
+msgid "Sun"
+msgstr "Solen"
+
+msgid "An account with this email address already exists."
+msgstr "Der findes allerede en konto med denne e-mail-adresse."
+
+msgid "Currently the email address is used as a unique identifier and does not have to be verified. You may enter a fake address."
+msgstr "I øjeblikket bruges e-mail-adressen som en unik identifikator og behøver ikke at blive verificeret. Du kan indtaste en falsk adresse."
+
+msgid "This password reset link has expired, please request a new one."
+msgstr "Dette link til nulstilling af adgangskode er udløbet. Anmod venligst om et nyt."
+
+#, php-format
+msgid "somebody has requested a password reset for this email address from %s. If this was you, click the button below to invalidate your current password and set a new one."
+msgstr "nogen har anmodet om en nulstilling af adgangskoden til denne e-mailadresse fra %s. Hvis det var dig, skal du klikke på knappen nedenfor for at annullere din nuværende adgangskode og indstille en ny."
+
+msgid "amazon links are automatically converted to affiliate links to help support the project financially."
+msgstr "amazon-links konverteres automatisk til affiliate-links for at hjælpe med at støtte projektet økonomisk."
+
+msgid "A fatal error when the CHANNELS constant is removed from the config"
+msgstr "En fatal fejl, når CHANNELS-konstanten fjernes fra konfigurationen"
+
+msgid "Additional logins are no longer required when switching between wishthis channels"
+msgstr "Yderligere logins er ikke længere nødvendige, når man skifter mellem wishthis-kanaler"
