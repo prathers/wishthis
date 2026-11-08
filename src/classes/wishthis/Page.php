@@ -24,6 +24,11 @@ class Page
      */
     public const PAGE_API             = '/index.php?page=api';
     public const PAGE_BLOG            = '/index.php?page=blog';
+
+    /** Source code of this instance (the prathers fork). */
+    public const URL_REPOSITORY           = 'https://github.com/prathers/wishthis';
+    public const URL_REPOSITORY_VERSION   = self::URL_REPOSITORY . '/tree/production';
+    public const URL_REPOSITORY_CHANGELOG = self::URL_REPOSITORY . '/commits/production';
     public const PAGE_CHANGELOG       = '/index.php?page=changelog';
     public const PAGE_HOME            = '/index.php?page=home';
     public const PAGE_INSTALL         = '/index.php?page=install';
@@ -436,7 +441,6 @@ class Page
         $user = User::getCurrent();
 
         $wishlists = Navigation::Wishlists->value;
-        $blog      = Navigation::Blog->value;
         $system    = Navigation::System->value;
         $settings  = Navigation::Settings->value;
         $account   = Navigation::Account->value;
@@ -444,17 +448,6 @@ class Page
         $register  = Navigation::Register->value;
 
         $pages = [
-            $blog    => [
-                'text'      => __('Blog'),
-                'alignment' => 'left',
-                'items'     => [
-                    [
-                        'text' => __('Blog'),
-                        'url'  => self::PAGE_BLOG,
-                        'icon' => 'rss',
-                    ],
-                ],
-            ],
             $system  => [
                 'text'      => __('System'),
                 'icon'      => 'wrench',
@@ -664,17 +657,22 @@ class Page
             <div class="ui container">
                 <div class="ui stackable inverted divided equal height stackable grid">
 
-                    <div class="six wide column">
+                    <div class="eight wide column">
                         <h4 class="ui inverted header">wishthis</h4>
 
                         <div class="ui inverted link list">
-                            <div class="item">
+                            <a class="item"
+                               href="<?= Page::URL_REPOSITORY_VERSION ?>"
+                               target="_blank"
+                               title="<?= VERSION ?>"
+                            >
                                 <i class="code branch icon"></i>
                                 <div class="content"><?= VERSION ?></div>
-                            </div>
+                            </a>
 
                             <a class="item"
-                               href="<?= Page::PAGE_CHANGELOG ?>"
+                               href="<?= Page::URL_REPOSITORY_CHANGELOG ?>"
+                               target="_blank"
                                title="<?= __('Changelog') ?>"
                             >
                                 <i class="newspaper icon"></i>
@@ -683,12 +681,12 @@ class Page
                         </div>
                     </div>
 
-                    <div class="five wide column">
+                    <div class="eight wide column">
                         <h4 class="ui inverted header"><?= __('Contribute') ?></h4>
 
                         <div class="ui inverted link list">
                             <a class="item"
-                               href="https://github.com/wishthis/wishthis"
+                               href="<?= Page::URL_REPOSITORY ?>"
                                target="_blank"
                                title="<?= __('GitHub') ?>"
                             >
@@ -703,30 +701,6 @@ class Page
                             >
                                 <i class="language icon"></i>
                                 <div class="content"><?= __('Transifex') ?></div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="five wide column">
-                        <h4 class="ui inverted header"><?= __('Contact') ?></h4>
-
-                        <div class="ui inverted link list">
-                            <a class="item"
-                               href="https://matrix.to/#/#wishthis:matrix.org"
-                               target="_blank"
-                               title="<?= __('Matrix') ?>"
-                            >
-                                <i class="comment dots icon"></i>
-                                <div class="content"><?= __('Matrix') ?></div>
-                            </a>
-
-                            <a class="item"
-                               href="https://discord.gg/WrUXnpNyza"
-                               target="_blank"
-                               title="<?= __('Discord') ?>"
-                            >
-                                <i class="discord icon"></i>
-                                <div class="content"><?= __('Discord') ?></div>
                             </a>
                         </div>
                     </div>

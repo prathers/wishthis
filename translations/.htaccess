@@ -1,0 +1,5 @@
+# Translation files are read by PHP from disk; they do not need to be
+# served over HTTP.
+<FilesMatch "\.(po|pot|mo)$">
+    Require all denied
+</FilesMatch>
