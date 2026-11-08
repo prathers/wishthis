@@ -16,7 +16,7 @@ $buttonSubmit = $passwordReset ? __('Reset')          : __('Register');
 
 $page = new Page(__FILE__, $pageTitle);
 
-if (isset($_POST['email'], $_POST['password']) && !empty($_POST['planet']) && !$registrationDisabled) {
+if (isset($_POST['email'], $_POST['password']) && !empty($_POST['planet']) && (!$registrationDisabled || $passwordReset)) {
     $users      = $database
     ->query(
         'SELECT *
@@ -82,10 +82,11 @@ if (isset($_POST['email'], $_POST['password']) && !empty($_POST['planet']) && !$
                 ]
             );
 
-            if (false !== $userQuery) {
-                $user = new User($userQuery->fetch());
+            $userData = false !== $userQuery ? $userQuery->fetch() : false;
 
-                echo \date('d.m.Y H:i') . ' <= ' . \date('d.m.Y H:i', $user->getPasswordResetValidUntil()) . '.';
+            if (false !== $userData) {
+                $user = new User($userData);
+
                 if (\time() <= $user->getPasswordResetValidUntil()) {
                     $database
                     ->query(
@@ -214,7 +215,7 @@ $page->navigation();
 
         <?= $page->messages() ?>
 
-        <?php if ($registrationDisabled) { ?>
+        <?php if ($registrationDisabled && !$passwordReset) { ?>
             <div class="ui segment">
                 <p>The owner of this instance has disabled user registration.</p>
             </div>

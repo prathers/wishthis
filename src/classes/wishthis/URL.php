@@ -11,6 +11,21 @@ namespace wishthis;
 class URL
 {
     /**
+     * The absolute base URL of this instance, e. g. `https://wish.example.com`.
+     *
+     * Also detects HTTPS behind a reverse proxy (e. g. DDEV or a load
+     * balancer), where PHP itself only sees a plain HTTP request.
+     */
+    public static function getBase(): string
+    {
+        $isHttps = (!empty($_SERVER['HTTPS']) && 'off' !== \strtolower($_SERVER['HTTPS']))
+                || 'https' === \strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')
+                || 'https' === \strtolower($_SERVER['REQUEST_SCHEME'] ?? '');
+
+        return ($isHttps ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+    }
+
+    /**
      * Returns the HTTP status code of a URL.
      *
      * @param string $url

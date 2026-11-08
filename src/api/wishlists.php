@@ -43,20 +43,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 'lastInsertId' => $database->lastInsertId(),
             ];
         } elseif (isset($_POST['wishlist-id'])) {
-            global $options;
-
-            $applicationId = $options->getOption('mjml_api_application_id');
-            $secretKey     = $options->getOption('mjml_api_secret_key');
-
             $response['title']   = __('Request more wishes');
             $response['message'] = __('Unable to send request.');
             $response['button']  = __('Ok');
-
-            if (empty($applicationId) || empty($secretKey)) {
-                $response['message'] = __('Unable to send email without MJML API keys.');
-
-                return;
-            }
 
             /**
              * Request more wishes
@@ -90,7 +79,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 return;
             }
 
-            $href = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . Page::PAGE_WISHLISTS . '&id=' . $wishlist['id'];
+            $href = URL::getBase() . Page::PAGE_WISHLISTS . '&id=' . $wishlist['id'];
 
             /** Send email */
             $user  = User::getFromID($wishlist['user']);

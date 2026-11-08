@@ -53,44 +53,50 @@ if (isset($_POST['reset'], $_POST['email'])) {
             'user_email' => Sanitiser::getEmail($_POST['email']),
         ]
     );
+    $userData = false !== $userQuery ? $userQuery->fetch() : false;
 
-    $user = false !== $userQuery ? new User($userQuery->fetch()) : new User();
+    /**
+     * Only send an email to registered users. The message below is the same
+     * either way, so it cannot be used to find out who is registered.
+     */
+    if (false !== $userData) {
+        $user = new User($userData);
 
-    $token      = sha1(\time() . rand(0, 999999));
-    $validUntil = \time() + 3600;
+        $token      = \bin2hex(\random_bytes(20));
+        $validUntil = \time() + 3600;
 
-    $database
-    ->query(
-        'UPDATE `users`
-            SET `password_reset_token`       = :user_password_reset_token,
-                `password_reset_valid_until` = :user_reset_valid_until
-          WHERE `id` = ' . $user->getId() . ';',
-        [
-            'user_password_reset_token' => $token,
-            'user_reset_valid_until'    => \date('Y-m-d H:i:s', $validUntil),
-        ]
-    );
+        $database
+        ->query(
+            'UPDATE `users`
+                SET `password_reset_token`       = :user_password_reset_token,
+                    `password_reset_valid_until` = :user_reset_valid_until
+              WHERE `id` = :user_id;',
+            [
+                'user_password_reset_token' => $token,
+                'user_reset_valid_until'    => \date('Y-m-d H:i:s', $validUntil),
+                'user_id'                   => $user->getId(),
+            ]
+        );
 
-    $emailReset = new Email($_POST['email'], __('Password reset link', null, $user), 'default', 'password-reset');
-    $emailReset->setPlaceholder('TEXT_HELLO', __('Hello,', null, $user));
-    $emailReset->setPlaceholder(
-        'TEXT_PASSWORD_RESET',
-        \sprintf(
-            /** TRANSLATORS: %s: The wishthis domain */
-            __('somebody has requested a password reset for this email address from %s. If this was you, click the button below to invalidate your current password and set a new one.', null, $user),
-            '<mj-raw><a href="https://wishthis.online">wishthis.online</a></mj-raw>'
-        )
-    );
-    $emailReset->setPlaceholder('TEXT_SET_NEW_PASSWORD', __('Set new password', null, $user));
-    $emailReset->setPlaceholder('wishthis.online', $_SERVER['HTTP_HOST']);
-    $emailReset->setPlaceholder(
-        'password-reset-link',
-        $_SERVER['REQUEST_SCHEME'] . '://' .
-        $_SERVER['HTTP_HOST'] .
-        Page::PAGE_REGISTER . '&password-reset=' . $user->getEmail() . '&token=' . $token
-    );
+        $emailReset = new Email($user->getEmail(), __('Password reset link', null, $user), 'default', 'password-reset');
+        $emailReset->setPlaceholder('TEXT_HELLO', __('Hello,', null, $user));
+        $emailReset->setPlaceholder(
+            'TEXT_PASSWORD_RESET',
+            \sprintf(
+                /** TRANSLATORS: %s: The wishthis domain */
+                __('somebody has requested a password reset for this email address from %s. If this was you, click the button below to invalidate your current password and set a new one.', null, $user),
+                '<a href="' . URL::getBase() . '">' . \htmlspecialchars($_SERVER['HTTP_HOST']) . '</a>'
+            )
+        );
+        $emailReset->setPlaceholder('TEXT_SET_NEW_PASSWORD', __('Set new password', null, $user));
+        $emailReset->setPlaceholder(
+            'password-reset-link',
+            URL::getBase() .
+            Page::PAGE_REGISTER . '&password-reset=' . \urlencode($user->getEmail()) . '&token=' . $token
+        );
 
-    $emailReset->send();
+        $emailReset->send();
+    }
 
     $page->messages[] = Page::info(
         __('If a match can be found for this email address, a password reset link will be sent to it.'),
@@ -169,7 +175,6 @@ $page->navigation();
                         <p><?= __('Consider using a password manager. It will save all your passwords and allow you to access them with one master password. Never forget a password ever again.') ?></p>
                         <p><?= \sprintf('%sBitwarden%s is the most trusted open source password manager.', '<a href="https://bitwarden.com/" target="_blank">', '</a>') ?></p>
 
-                        <?php if ($options->getOption('mjml_api_application_id') && $options->getOption('mjml_api_secret_key')) { ?>
                             <p>
                                 <form class="ui form reset" method="POST">
                                     <div class="ui action input" style="display: flex;">
@@ -189,7 +194,6 @@ $page->navigation();
                             </p>
 
                             <p><?= __('Please note that you have to enter the email address, you have registered with.') ?></p>
-                        <?php } ?>
                     </div>
                 </div>
 

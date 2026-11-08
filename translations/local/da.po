@@ -75,3 +75,16 @@ msgstr "Kunne ikke hente oplysninger"
 #: assets/js/inline.js.php
 msgid "This website does not allow automatic fetching. Please fill in the title, description and image yourself. The link has been saved."
 msgstr "Denne hjemmeside tillader ikke automatisk hentning. Udfyld selv titel, beskrivelse og billede. Linket er gemt."
+
+#: pages/settings.php
+msgid "Emails (password reset, wish requests) are sent directly from this server."
+msgstr "E-mails (nulstilling af adgangskode, ønskeanmodninger) sendes direkte fra denne server."
+
+#: pages/settings.php
+msgid "Sender"
+msgstr "Afsender"
+
+#: pages/settings.php
+#, php-format
+msgid "To use a different sender, define %s in %s. The domain of the sender should have SPF and DKIM set up, otherwise emails may end up as spam."
+msgstr "Definér %s i %s for at bruge en anden afsender. Afsenderens domæne bør have SPF og DKIM sat op, ellers kan e-mails havne i spam."

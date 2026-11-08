@@ -9,6 +9,7 @@
 
 ### Changed
 
+-   Emails are sent as simple HTML/plain text directly from the server; the MJML API is no longer needed. Optional `EMAIL_FROM` / `EMAIL_FROM_NAME` in `config.php`
 -   Updated translations from transifex
 -   Only logged in users can fulfil a wish. Fulfilled wishes stay visible on the wishlist (blurred out) instead of disappearing, and the user who fulfilled a wish can un-fulfil it again. Requires a database migration (`wishes`.`fulfilled_by`).
 
@@ -22,6 +23,9 @@
 
 ### Fixed
 
+-   Password reset crashing for unknown email addresses and manipulated reset links
+-   Password reset not possible when user registration is disabled
+-   Links in emails using `http` behind a reverse proxy
 -   An error when attempting to send an email (such as requesting new wishes) when the instance does not have MJML API keys configured (#215)
 -   Outdated transifex project link (#231)
 -   Apache RewriteRules not working (56bbc6d)
