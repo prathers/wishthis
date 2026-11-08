@@ -34,3 +34,4 @@
 ### Security
 
 -   Changing the status of a wish via the API now requires a logged in user; only the wishlist owner can mark a wish as fulfilled
+- Fixed: plural strings (e. g. "%d more subscribers needed") were never translated, because `_n()` looked up the plural English text instead of the singular msgid

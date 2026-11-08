@@ -133,3 +133,16 @@ msgstr "En fatal fejl, når CHANNELS-konstanten fjernes fra konfigurationen"
 
 msgid "Additional logins are no longer required when switching between wishthis channels"
 msgstr "Yderligere logins er ikke længere nødvendige, når man skifter mellem wishthis-kanaler"
+
+msgid "Fulfil wish"
+msgstr "Opfyld ønske"
+
+#, php-format
+msgid "If you found a wish you would like to fulfil, open the wish %s and then click the %s button and it will be unavailable for everybody else."
+msgstr "Hvis du har fundet et ønske, du gerne vil opfylde, skal du åbne ønsket ved at klikke på %s og derefter klikke på knappen %s, så bliver det utilgængeligt for alle andre."
+
+#, php-format
+msgid "%d more subscriber needed"
+msgid_plural "%d more subscribers needed"
+msgstr[0] "%d abonnent mere er nødvendig"
+msgstr[1] "%d abonnenter mere er nødvendige"
