@@ -548,6 +548,20 @@ class User
     {
         global $database;
 
+        /**
+         * Release wishes this user is fulfilling on other wishlists, so they
+         * do not stay blocked (blurred) forever.
+         */
+        $database->query(
+            'UPDATE `wishes`
+                SET `status`       = NULL,
+                    `fulfilled_by` = NULL
+              WHERE `fulfilled_by` = :user_id',
+            [
+                'user_id' => $this->id,
+            ]
+        );
+
         $database->query(
             'DELETE FROM `users`
                    WHERE `id` = :user_id',
