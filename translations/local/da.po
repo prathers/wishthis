@@ -135,7 +135,7 @@ msgid "Additional logins are no longer required when switching between wishthis 
 msgstr "Yderligere logins er ikke længere nødvendige, når man skifter mellem wishthis-kanaler"
 
 msgid "Fulfil wish"
-msgstr "Opfyld ønske"
+msgstr "Jeg opfylder ønsket"
 
 #, php-format
 msgid "If you found a wish you would like to fulfil, open the wish %s and then click the %s button and it will be unavailable for everybody else."
