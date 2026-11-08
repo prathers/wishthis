@@ -54,7 +54,13 @@ class Email
         $html = $renderer->render($this->mjml);
 
         $to      = $this->to;
-        $subject = $this->subject;
+        /**
+         * Email headers must be ASCII. Decode any HTML entities (e. g. from
+         * translations) and MIME-encode the subject so characters such as
+         * æ, ø and å are displayed correctly.
+         */
+        $subject = \html_entity_decode($this->subject, \ENT_QUOTES | \ENT_HTML5, 'UTF-8');
+        $subject = \mb_encode_mimeheader($subject, 'UTF-8', 'B', "\r\n");
         $message = $html;
         $headers = [
             'From'         => 'no-reply@' . $_SERVER['HTTP_HOST'],
