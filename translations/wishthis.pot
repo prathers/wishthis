@@ -1490,3 +1490,51 @@ msgstr ""
 #: pages/wishlists.php:64 pages/wishlists.php:67
 msgid "Share"
 msgstr ""
+
+#: classes/wishthis/Wish.php:270
+msgid "You are fulfilling this wish"
+msgstr ""
+
+#: classes/wishthis/Wish.php:270
+msgid "Somebody is already fulfilling this wish"
+msgstr ""
+
+#: classes/wishthis/Wish.php:277
+msgid "Un-fulfil"
+msgstr ""
+
+#: api/wishes.php:322
+msgid "Wish not found."
+msgstr ""
+
+#: api/wishes.php:328
+msgid "You must be logged in to fulfil a wish."
+msgstr ""
+
+#: api/wishes.php:340
+msgid "Only the owner of a wishlist can mark a wish as fulfilled."
+msgstr ""
+
+#: api/wishes.php:349
+msgid "You cannot fulfil a wish on your own wishlist."
+msgstr ""
+
+#: api/wishes.php:354
+msgid "This wish is already being fulfilled by somebody else."
+msgstr ""
+
+#: api/wishes.php:368
+msgid "Only the user who fulfilled this wish can un-fulfil it."
+msgstr ""
+
+#: api/wishes.php:376
+msgid "Invalid wish status."
+msgstr ""
+
+#: assets/js/inline.js.php:84
+msgid "Please log in"
+msgstr ""
+
+#: assets/js/inline.js.php:85
+msgid "You need to be logged in to fulfil a wish. This way only you can un-fulfil it again later."
+msgstr ""

@@ -2162,3 +2162,51 @@ msgstr "Indlæser dine ønskelister..."
 #: pages/wishlists.php:64 pages/wishlists.php:67
 msgid "Share"
 msgstr "Del"
+
+#: classes/wishthis/Wish.php:270
+msgid "You are fulfilling this wish"
+msgstr "Du opfylder dette ønske"
+
+#: classes/wishthis/Wish.php:270
+msgid "Somebody is already fulfilling this wish"
+msgstr "Nogen er allerede i gang med at opfylde dette ønske"
+
+#: classes/wishthis/Wish.php:277
+msgid "Un-fulfil"
+msgstr "Fortryd opfyldelse"
+
+#: api/wishes.php:322
+msgid "Wish not found."
+msgstr "Ønske ikke fundet."
+
+#: api/wishes.php:328
+msgid "You must be logged in to fulfil a wish."
+msgstr "Du skal være logget ind for at opfylde et ønske."
+
+#: api/wishes.php:340
+msgid "Only the owner of a wishlist can mark a wish as fulfilled."
+msgstr "Kun ejeren af ønskelisten kan markere et ønske som opfyldt."
+
+#: api/wishes.php:349
+msgid "You cannot fulfil a wish on your own wishlist."
+msgstr "Du kan ikke opfylde et ønske på din egen ønskeliste."
+
+#: api/wishes.php:354
+msgid "This wish is already being fulfilled by somebody else."
+msgstr "Dette ønske er allerede ved at blive opfyldt af en anden."
+
+#: api/wishes.php:368
+msgid "Only the user who fulfilled this wish can un-fulfil it."
+msgstr "Kun den bruger, der opfyldte dette ønske, kan fortryde opfyldelsen."
+
+#: api/wishes.php:376
+msgid "Invalid wish status."
+msgstr "Ugyldig ønskestatus."
+
+#: assets/js/inline.js.php:84
+msgid "Please log in"
+msgstr "Log venligst ind"
+
+#: assets/js/inline.js.php:85
+msgid "You need to be logged in to fulfil a wish. This way only you can un-fulfil it again later."
+msgstr "Du skal være logget ind for at opfylde et ønske. På den måde er det kun dig, der kan fortryde opfyldelsen igen senere."
