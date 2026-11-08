@@ -93,7 +93,7 @@ $user = User::getCurrent();
                 <div class="ui segment">
                     <h2 class="ui header"><?= __('Use case') ?></h2>
 
-                    <p><?= __('Your birthday is coming up and you just created a wishlist with all the cool stuff you want. Your friends and family want to make sure you get something you are happy with so you send them your wishlist link and if anybody decides to fulfil one of your wishes, it will disappear for everybody else.') ?></p>
+                    <p><?= __('Your birthday is coming up and you just created a wishlist with all the cool stuff you want. Your friends and family want to make sure you get something you are happy with so you send them your wishlist link. When somebody decides to fulfil one of your wishes, it is marked as taken for everybody else, so nobody buys the same gift twice.') ?></p>
                 </div>
 
                 <div class="ui segment">
