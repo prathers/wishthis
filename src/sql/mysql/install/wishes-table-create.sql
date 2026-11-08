@@ -7,6 +7,7 @@ CREATE TABLE `wishes` (
     `url`            VARCHAR(255) NULL     DEFAULT NULL,
     `priority`       TINYINT(1)   NULL     DEFAULT NULL,
     `status`         VARCHAR(32)  NULL     DEFAULT NULL,
+    `fulfilled_by`   INT          NULL     DEFAULT NULL,
     `is_purchasable` BOOLEAN      NOT NULL DEFAULT FALSE,
     `edited`         TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

@@ -9,6 +9,7 @@
 ### Changed
 
 -   Updated translations from transifex
+-   Only logged in users can fulfil a wish. Fulfilled wishes stay visible on the wishlist (blurred out) instead of disappearing, and the user who fulfilled a wish can un-fulfil it again. Requires a database migration (`wishes`.`fulfilled_by`).
 
 ### Deprecated
 
@@ -26,4 +27,4 @@
 
 ### Security
 
--   Nothing
+-   Changing the status of a wish via the API now requires a logged in user; only the wishlist owner can mark a wish as fulfilled

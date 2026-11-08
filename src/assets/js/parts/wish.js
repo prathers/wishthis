@@ -1,5 +1,6 @@
 const wish_button_mark_as_fulfilled = '.ui.button.wish-fulfilled';
 const wish_button_fulfil_wish       = '.ui.button.wish-fulfil';
+const wish_button_unfulfil_wish     = '.ui.button.wish-unfulfil';
 const wish_button_visit             = '.ui.button.wish-visit';
 const wish_button_options           = '.ui.button.wish-options';
 const wish_button_options_edit      = wish_button_options + ' .item.wish-edit';
@@ -11,7 +12,13 @@ function wish_set_to(wish_data) {
     wish = wish_data;
 
     $(wish_button_mark_as_fulfilled).removeClass('disabled');
-    $(wish_button_fulfil_wish).removeClass('disabled');
+
+    /** A wish which is already being fulfilled cannot be fulfilled again. */
+    if (wish.status === wishthis.wish.status.unavailable) {
+        $(wish_button_fulfil_wish).addClass('disabled');
+    } else {
+        $(wish_button_fulfil_wish).removeClass('disabled');
+    }
 
     if (wish.url) {
         $(wish_button_visit)
@@ -37,6 +44,43 @@ function wish_set_to(wish_data) {
 
 function wish_unset() {
     wish = undefined;
+}
+
+/**
+ * Ask a visitor to log in before they can fulfil a wish.
+ */
+function wish_show_login_required(modal_wish_details) {
+    if (modal_wish_details && modal_wish_details.length) {
+        modal_wish_details.modal('hide');
+    }
+
+    $('body')
+    .modal({
+        'title'   : wishthis.strings.modal.wish.login.title,
+        'content' : wishthis.strings.modal.wish.login.content,
+        'class'   : 'tiny',
+        'actions' : [
+            {
+                'text'  : wishthis.strings.modal.wish.login.login,
+                'class' : 'approve primary',
+            },
+            {
+                'text'  : wishthis.strings.modal.wish.login.register,
+                'class' : 'register',
+                'click' : function() {
+                    window.location.href = wishthis.page.register;
+                },
+            },
+            {
+                'text' : wishthis.strings.modal.wish.login.deny,
+                'class' : 'deny',
+            },
+        ],
+        'onApprove' : function() {
+            window.location.href = wishthis.page.login;
+        },
+    })
+    .modal('show');
 }
 
 $(function () {
@@ -179,7 +223,16 @@ $(function () {
      * Fulfill wish
      */
     $(document).on('click', wish_button_fulfil_wish, function() {
-        const modal_wish_details = $(this).closest('.ui.modal');
+        const button_fulfil      = $(this);
+        const modal_wish_details = button_fulfil.closest('.ui.modal');
+
+        /** Only logged in users can fulfil wishes. */
+        if (!wishthis.user.isLoggedIn) {
+            wish_show_login_required(modal_wish_details);
+
+            return;
+        }
+
         const mark_as_fulfilled  = {
             'method'      : 'PUT',
             'credentials' : 'include',
@@ -189,7 +242,7 @@ $(function () {
             }),
         }
 
-        $(this).addClass('disabled loading');
+        button_fulfil.addClass('disabled loading');
 
         fetch('/index.php?page=api&module=wishes', mark_as_fulfilled)
         .then(handleFetchError)
@@ -201,7 +254,36 @@ $(function () {
         })
         .catch(handleFetchCatch)
         .finally(function() {
-            $(this).removeClass('disabled loading');
+            button_fulfil.removeClass('loading');
+        });
+    });
+    /** */
+
+    /**
+     * Un-fulfil wish
+     */
+    $(document).on('click', wish_button_unfulfil_wish, function() {
+        const button_unfulfil = $(this);
+        const card            = button_unfulfil.closest('.ui.card.wish');
+
+        button_unfulfil.addClass('disabled loading');
+
+        fetch('/index.php?page=api&module=wishes', {
+            'method'      : 'PUT',
+            'credentials' : 'include',
+            'body'        : new URLSearchParams({
+                'wish_id'     : card.attr('data-id'),
+                'wish_status' : wishthis.wish.status.available,
+            }),
+        })
+        .then(handleFetchError)
+        .then(handleFetchResponse)
+        .then(function(response) {
+            $('.ui.dropdown.filter.priority').api('query');
+        })
+        .catch(handleFetchCatch)
+        .finally(function() {
+            button_unfulfil.removeClass('disabled loading');
         });
     });
     /** */

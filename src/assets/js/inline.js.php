@@ -24,7 +24,19 @@ global $options;
             'temporary'   : '<?= Wish::STATUS_TEMPORARY ?>',
             'unavailable' : '<?= Wish::STATUS_UNAVAILABLE ?>',
             'fulfilled'   : '<?= Wish::STATUS_FULFILLED ?>',
+            'available'   : '<?= Wish::STATUS_AVAILABLE ?>',
         }
+    }
+
+    /** User */
+    wishthis.user = {
+        'isLoggedIn' : <?= User::getCurrent()->isLoggedIn() ? 'true' : 'false' ?>,
+    }
+
+    /** Pages */
+    wishthis.page = {
+        'login'    : '<?= Page::PAGE_LOGIN ?>',
+        'register' : '<?= Page::PAGE_REGISTER ?>',
     }
 
     /** Strings */
@@ -67,6 +79,13 @@ global $options;
                     'content' : '<?= __('Would you really like to delete to this wish? It will be gone forever.') ?>',
                     'approve' : '<?= __('Yes, delete') ?>',
                     'deny'    : '<?= __('No, keep') ?>',
+                },
+                'login' : {
+                    'title'    : '<?= __('Please log in') ?>',
+                    'content'  : '<?= __('You need to be logged in to fulfil a wish. This way only you can un-fulfil it again later.') ?>',
+                    'login'    : '<?= __('Login') ?>',
+                    'register' : '<?= __('Register') ?>',
+                    'deny'     : '<?= __('Cancel') ?>',
                 }
             }
         },

@@ -16,3 +16,5 @@
 /node_modules/prr
 /node_modules/sax
 /node_modules/@octokit
+
+/.ddev

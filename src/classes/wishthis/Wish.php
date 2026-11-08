@@ -24,6 +24,7 @@ class Wish
     public const STATUS_TEMPORARY_MINUTES = 30;
     public const STATUS_UNAVAILABLE       = 'unavailable';
     public const STATUS_FULFILLED         = 'fulfilled';
+    public const STATUS_AVAILABLE         = 'available';
 
     public static array $priorities;
     public static array $affiliates = [
@@ -67,7 +68,12 @@ class Wish
         }
 
         $wishData = $wishQuery->fetch();
-        $wish     = new self($wishData);
+
+        if (false === $wishData) {
+            return false;
+        }
+
+        $wish = new self($wishData);
 
         return $wish;
     }
@@ -178,6 +184,13 @@ class Wish
     private ?string $status;
 
     /**
+     * The id of the user who fulfilled this wish.
+     *
+     * @var int|null
+     */
+    private ?int $fulfilled_by;
+
+    /**
      * Whether this wish is purchasable.
      *
      * @var bool
@@ -211,6 +224,7 @@ class Wish
         $this->url            = \htmlspecialchars($wishData['url'] ?? '', ENT_QUOTES);
         $this->priority       = $wishData['priority'];
         $this->status         = $wishData['status'];
+        $this->fulfilled_by   = isset($wishData['fulfilled_by']) ? (int) $wishData['fulfilled_by'] : null;
         $this->is_purchasable = $wishData['is_purchasable'];
         $this->edited         = $wishData['edited'] ? \strtotime($wishData['edited']) : null;
         $this->price          = $wishData['price'] ?? null;
@@ -227,6 +241,8 @@ class Wish
             \NumberFormatter::CURRENCY
         );
         $userIsCurrent   = $userCurrent->isLoggedIn() && $userCurrent->getId() === $userCard->getId();
+        $isUnavailable   = $this->isUnavailable() && !$userIsCurrent;
+        $fulfilledByMe   = $isUnavailable && $this->isFulfilledBy($userCurrent);
 
         /**
          * Card
@@ -238,11 +254,33 @@ class Wish
         }
 
         $card_style = 'list' === $this->style ? 'horizontal card' : 'card';
+        $card_state = $isUnavailable ? 'dimmed unavailable' : '';
         ?>
-        <div class="ui blurring dimmable fluid <?= $card_style ?> wish"
+        <div class="ui blurring dimmable fluid <?= $card_style ?> wish <?= $card_state ?>"
             data-id="<?= $this->id ?>"
             data-cache="<?= $generateCache ?>"
         >
+            <?php if ($isUnavailable) { ?>
+            <div class="ui active inverted dimmer wish-unavailable">
+                <div class="content">
+                    <div class="center">
+                        <div class="ui icon header">
+                            <i class="gift icon"></i>
+                            <div class="content">
+                                <?= $fulfilledByMe ? __('You are fulfilling this wish') : __('Somebody is already fulfilling this wish') ?>
+                            </div>
+                        </div>
+
+                        <?php if ($fulfilledByMe) { ?>
+                            <button class="ui labeled icon button wish-unfulfil">
+                                <i class="undo icon"></i>
+                                <?= __('Un-fulfil') ?>
+                            </button>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+            <?php } else { ?>
             <div class="ui inverted dimmer">
                 <div class="content">
                     <div class="center">
@@ -273,6 +311,7 @@ class Wish
                     </div>
                 </div>
             </div>
+            <?php } ?>
 
             <?= $this->getCardImage() ?>
 
@@ -459,6 +498,26 @@ class Wish
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    /**
+     * Whether a visitor has fulfilled (reserved) this wish.
+     */
+    public function isUnavailable(): bool
+    {
+        return self::STATUS_UNAVAILABLE === $this->status;
+    }
+
+    public function isFulfilledBy(User $user): bool
+    {
+        return $user->isLoggedIn()
+            && null !== $this->fulfilled_by
+            && $this->fulfilled_by === $user->getId();
     }
 
     public function getWishlistId(): int

@@ -354,3 +354,15 @@
 .ui.cards > .card .dimmer {
     z-index: calc(var(--dimmerZIndex) + 2);
 }
+
+/** Unavailable (fulfilled by a visitor) */
+.wishlist .ui.card.wish.unavailable > :not(.dimmer) {
+    pointer-events: none;
+    user-select: none;
+}
+.wishlist .ui.card.wish.unavailable > .dimmer.wish-unavailable {
+    border-radius: inherit;
+}
+.wishlist .ui.card.wish.unavailable > .dimmer.wish-unavailable .ui.icon.header {
+    font-size: 1.1em;
+}

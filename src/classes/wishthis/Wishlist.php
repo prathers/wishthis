@@ -127,30 +127,12 @@ class Wishlist
         $WHERE     = isset($options['WHERE'])     ? $options['WHERE']     : '`wishlist` = :wishlist_id';
         $ORDER_BY  = isset($options['ORDER_BY'])  ? $options['ORDER_BY']  : '`priority` DESC, `url` ASC, `title` ASC';
 
-        /** Default to showing available wishes */
-        $wish_status = ' AND (
-                `wishes`.`status` IS NULL
-            OR (
-                    `wishes`.`status` != "' . Wish::STATUS_UNAVAILABLE . '"
-                AND `wishes`.`status` != "' . Wish::STATUS_FULFILLED . '"
-            )
-        )';
-
-        $user = User::getCurrent();
-
-        if ($user->isLoggedIn()) {
-            $wishlist_ids = \array_map(
-                function ($wishlist_data) {
-                    return \intval($wishlist_data['id']);
-                },
-                $user->getWishlists()
-            );
-
-            /** Show all wishes (except fulfilled) */
-            if (\in_array($this->id, $wishlist_ids, true)) {
-                $wish_status = ' AND (`wishes`.`status` IS NULL OR `wishes`.`status` != "' . Wish::STATUS_FULFILLED . '")';
-            }
-        }
+        /**
+         * Show all wishes except the ones the wishlist owner marked as
+         * fulfilled. Wishes fulfilled by a visitor (unavailable) remain
+         * visible, but are rendered blurred out in the card.
+         */
+        $wish_status = ' AND (`wishes`.`status` IS NULL OR `wishes`.`status` != \'' . Wish::STATUS_FULFILLED . '\')';
 
         $WHERE .= $wish_status;
 

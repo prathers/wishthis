@@ -314,18 +314,77 @@ switch ($_SERVER['REQUEST_METHOD']) {
              */
             $wish_status = Sanitiser::getStatus($_PUT['wish_status']);
             $wish_id     = Sanitiser::getNumber($_PUT['wish_id']);
+            $wish        = Wish::getFromId($wish_id);
+            $user        = User::getCurrent();
 
-            if (Wish::STATUS_TEMPORARY === $wish_status) {
-                $wish_status =  \time();
+            if (false === $wish) {
+                \http_response_code(404);
+                die(__('Wish not found.'));
+            }
+
+            /** Only logged in users may change the status of a wish. */
+            if (!$user->isLoggedIn()) {
+                \http_response_code(401);
+                die(__('You must be logged in to fulfil a wish.'));
+            }
+
+            $wishlist       = Wishlist::getFromId($wish->getWishlistId());
+            $userOwnsWish   = false !== $wishlist && $wishlist->getUserId() === $user->getId();
+            $wish_fulfiller = null;
+
+            switch ($wish_status) {
+                /** Owner marks the wish as fulfilled (hides it). */
+                case Wish::STATUS_FULFILLED:
+                    if (!$userOwnsWish) {
+                        \http_response_code(403);
+                        die(__('Only the owner of a wishlist can mark a wish as fulfilled.'));
+                    }
+                    break;
+
+                /** A visitor fulfils (reserves) the wish. */
+                case Wish::STATUS_TEMPORARY:
+                case Wish::STATUS_UNAVAILABLE:
+                    if ($userOwnsWish) {
+                        \http_response_code(403);
+                        die(__('You cannot fulfil a wish on your own wishlist.'));
+                    }
+
+                    if (null !== $wish->getStatus() && !$wish->isFulfilledBy($user)) {
+                        \http_response_code(409);
+                        die(__('This wish is already being fulfilled by somebody else.'));
+                    }
+
+                    if (Wish::STATUS_TEMPORARY === $wish_status) {
+                        $wish_status = (string) \time();
+                    }
+
+                    $wish_fulfiller = $user->getId();
+                    break;
+
+                /** The fulfilling user makes the wish available again. */
+                case Wish::STATUS_AVAILABLE:
+                    if (!$wish->isFulfilledBy($user)) {
+                        \http_response_code(403);
+                        die(__('Only the user who fulfilled this wish can un-fulfil it.'));
+                    }
+
+                    $wish_status = null;
+                    break;
+
+                default:
+                    \http_response_code(400);
+                    die(__('Invalid wish status.'));
             }
 
             $database->query(
                 'UPDATE `wishes`
-                    SET `status` = :wish_status
-                  WHERE `id`     = :wish_id',
+                    SET `status`       = :wish_status,
+                        `fulfilled_by` = :wish_fulfiller
+                  WHERE `id`           = :wish_id',
                 [
-                    'wish_status' => $wish_status,
-                    'wish_id'     => $wish_id,
+                    'wish_status'    => $wish_status,
+                    'wish_fulfiller' => $wish_fulfiller,
+                    'wish_id'        => $wish_id,
                 ]
             );
 

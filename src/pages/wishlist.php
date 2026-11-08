@@ -27,6 +27,11 @@ $page->bodyStart();
 $page->navigation();
 
 $user = User::getCurrent();
+
+/** Bring guests back to this wishlist after logging in to fulfil a wish. */
+if (!$user->isLoggedIn()) {
+    $_SESSION['REDIRECT_URL'] = $_SERVER['REQUEST_URI'];
+}
 ?>
 
 <main>
