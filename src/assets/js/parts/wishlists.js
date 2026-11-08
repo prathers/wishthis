@@ -406,6 +406,21 @@ $(function () {
             .then(function(response) {
                 var wishInfoProposed = response.info;
 
+                /**
+                 * Tell the user when the page could not be fetched (e. g. the
+                 * shop blocks automatic requests), so empty fields are not
+                 * mistaken for a bug. The wish is saved with its link anyway.
+                 */
+                if (wishInfoProposed.fetchFailed && !wishInfoProposed.title) {
+                    $('body').toast({
+                        class       : 'warning',
+                        showIcon    : 'exclamation triangle',
+                        title       : wishthis.strings.toast.wish.fetch_failed.title,
+                        message     : wishthis.strings.toast.wish.fetch_failed.content,
+                        displayTime : 12000,
+                    });
+                }
+
                 var modalValidate = $('.modal.validate');
 
                 /** Prodiver name */

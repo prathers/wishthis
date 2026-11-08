@@ -67,3 +67,11 @@ msgstr "Du skal være logget ind for at opfylde et ønske. På den måde er det 
 #: pages/home.php:96
 msgid "Your birthday is coming up and you just created a wishlist with all the cool stuff you want. Your friends and family want to make sure you get something you are happy with so you send them your wishlist link. When somebody decides to fulfil one of your wishes, it is marked as taken for everybody else, so nobody buys the same gift twice."
 msgstr "Du har snart fødselsdag, og du har lige oprettet en ønskeliste med alle de fede ting, du ønsker dig. Dine venner og familie vil gerne sikre sig, at du får noget, som du er glad for, så du sender dem dit link til ønskelisten. Når nogen beslutter sig for at opfylde et af dine ønsker, bliver det markeret som optaget for alle andre, så ingen køber den samme gave to gange."
+
+#: assets/js/inline.js.php
+msgid "Could not fetch details"
+msgstr "Kunne ikke hente oplysninger"
+
+#: assets/js/inline.js.php
+msgid "This website does not allow automatic fetching. Please fill in the title, description and image yourself. The link has been saved."
+msgstr "Denne hjemmeside tillader ikke automatisk hentning. Udfyld selv titel, beskrivelse og billede. Linket er gemt."

@@ -38,6 +38,13 @@ class Embed extends Cache
         $info = $this->exists() ? \json_decode(\file_get_contents($filepath)) : new \stdClass();
 
         if (true === $generateCache) {
+            /**
+             * Whether the page could not be fetched, e. g. because the shop
+             * blocks automatic requests (HTTP 429/403).
+             */
+            $info->fetchFailed  = false;
+            $info->responseCode = null;
+
             try {
                 /**
                  * Fetch embed info
@@ -46,6 +53,13 @@ class Embed extends Cache
                  */
                 $embed     = new \Embed\Embed();
                 $embedInfo = $embed->get($this->url);
+
+                $responseCode       = $embedInfo->getResponse()->getStatusCode();
+                $info->responseCode = $responseCode;
+
+                if ($responseCode < 200 || $responseCode >= 400) {
+                    throw new \RuntimeException('Fetching ' . $this->url . ' failed with HTTP ' . $responseCode);
+                }
 
                 /** Convert embed info to a saveable format (JSON) stdClass */
                 $info->authorName    = (string) $embedInfo->authorName;
@@ -68,9 +82,10 @@ class Embed extends Cache
                 $info->title         = (string) $embedInfo->title;
                 $info->url           = (string) $embedInfo->url;
             } catch (\Throwable $ex) {
-                $generateCache = false;
+                $generateCache     = false;
+                $info->fetchFailed = true;
 
-                echo $ex->getMessage();
+                \error_log($ex->getMessage());
             }
 
             if ($generateCache) {

@@ -134,6 +134,10 @@ global $options;
                 'create' : '<?= __('Wish successfully created.') ?>',
                 'update' : '<?= __('Wish information updated.') ?>',
                 'delete' : '<?= __('Wish successfully deleted.') ?>',
+                'fetch_failed' : {
+                    'title'   : '<?= __('Could not fetch details') ?>',
+                    'content' : '<?= __('This website does not allow automatic fetching. Please fill in the title, description and image yourself. The link has been saved.') ?>',
+                },
             },
 
             'clipboard' : {
