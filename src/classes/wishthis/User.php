@@ -220,12 +220,44 @@ class User
     {
         /** Load Translation */
         $translationFilepath = ROOT . '/translations/' . $locale . '.po';
+        $loader              = new \Gettext\Loader\PoLoader();
 
         if (\file_exists($translationFilepath)) {
-            $loader             = new \Gettext\Loader\PoLoader();
             $this->translations = $loader->loadFile($translationFilepath);
         } else {
             \trigger_error('Unable to find translations for ' . $locale . ', defaulting to ' . DEFAULT_LOCALE . '.', \E_USER_NOTICE);
+        }
+
+        /**
+         * Load local translations
+         *
+         * Instance specific translations in `translations/local/` are kept
+         * separate from the Transifex managed files, so syncing with upstream
+         * never conflicts. They are layered on top and win over the upstream
+         * translation. Both `da_DK.po` and the language-only `da.po` are
+         * looked up, so a single `da.po` covers all Danish locales.
+         */
+        $localDirectory = ROOT . '/translations/local/';
+        $localFilepaths = \array_unique(
+            [
+                $localDirectory . \Locale::getPrimaryLanguage($locale) . '.po',
+                $localDirectory . $locale . '.po',
+            ]
+        );
+
+        foreach ($localFilepaths as $localFilepath) {
+            if (!\file_exists($localFilepath)) {
+                continue;
+            }
+
+            $localTranslations = $loader->loadFile($localFilepath);
+
+            $this->translations = null === $this->translations
+                ? $localTranslations
+                : $this->translations->mergeWith(
+                    $localTranslations,
+                    \Gettext\Merge::TRANSLATIONS_OVERRIDE | \Gettext\Merge::HEADERS_OURS
+                );
         }
 
         /** Set locale */

@@ -5,6 +5,7 @@
 -   Textfield for public wishlist url (#220)
 -   SQLite support (#67)
 -   PHP 8.4 support
+-   Instance specific translations in `translations/local/` which are layered on top of the Transifex translations
 
 ### Changed
 
