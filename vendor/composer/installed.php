@@ -298,15 +298,6 @@
                 0 => '1.0|2.0|3.0',
             ),
         ),
-        'qferr/mjml-php' => array(
-            'pretty_version' => '2.0.0',
-            'version' => '2.0.0.0',
-            'reference' => 'c7185024d8b561bd3b532b29f46cba0f4b789b70',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../qferr/mjml-php',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'ralouphie/getallheaders' => array(
             'pretty_version' => '3.0.3',
             'version' => '3.0.3.0',

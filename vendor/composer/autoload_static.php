@@ -21,7 +21,7 @@ class ComposerStaticInit5f3db9fc1d0cf1dd6a77a1d84501b4b1
     );
 
     public static $prefixLengthsPsr4 = array (
-        'S' => 
+        'S' =>
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
@@ -33,11 +33,7 @@ class ComposerStaticInit5f3db9fc1d0cf1dd6a77a1d84501b4b1
             'Symfony\\Component\\Console\\' => 26,
             'Slim\\Psr7\\' => 10,
         ),
-        'Q' => 
-        array (
-            'Qferrer\\Mjml\\' => 13,
-        ),
-        'P' => 
+        'P' =>
         array (
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
@@ -45,36 +41,36 @@ class ComposerStaticInit5f3db9fc1d0cf1dd6a77a1d84501b4b1
             'PhpParser\\' => 10,
             'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' => 57,
         ),
-        'M' => 
+        'M' =>
         array (
             'ML\\JsonLD\\' => 10,
         ),
-        'J' => 
+        'J' =>
         array (
             'Jaybizzle\\CrawlerDetect\\' => 24,
         ),
-        'H' => 
+        'H' =>
         array (
             'HtmlParser\\' => 11,
         ),
-        'G' => 
+        'G' =>
         array (
             'Gettext\\Languages\\' => 18,
             'Gettext\\' => 8,
         ),
-        'F' => 
+        'F' =>
         array (
             'Fig\\Http\\Message\\' => 17,
         ),
-        'E' => 
+        'E' =>
         array (
             'Embed\\' => 6,
         ),
-        'D' => 
+        'D' =>
         array (
             'DeepCopy\\' => 9,
         ),
-        'C' => 
+        'C' =>
         array (
             'ConventionalChangelog\\' => 22,
             'Composer\\CaBundle\\' => 18,
@@ -82,121 +78,117 @@ class ComposerStaticInit5f3db9fc1d0cf1dd6a77a1d84501b4b1
     );
 
     public static $prefixDirsPsr4 = array (
-        'Symfony\\Polyfill\\Php80\\' => 
+        'Symfony\\Polyfill\\Php80\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
-        'Symfony\\Polyfill\\Mbstring\\' => 
+        'Symfony\\Polyfill\\Mbstring\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
-        'Symfony\\Polyfill\\Intl\\Normalizer\\' => 
+        'Symfony\\Polyfill\\Intl\\Normalizer\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
         ),
-        'Symfony\\Polyfill\\Intl\\Grapheme\\' => 
+        'Symfony\\Polyfill\\Intl\\Grapheme\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme',
         ),
-        'Symfony\\Polyfill\\Ctype\\' => 
+        'Symfony\\Polyfill\\Ctype\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
-        'Symfony\\Contracts\\Service\\' => 
+        'Symfony\\Contracts\\Service\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/service-contracts',
         ),
-        'Symfony\\Component\\String\\' => 
+        'Symfony\\Component\\String\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/string',
         ),
-        'Symfony\\Component\\Console\\' => 
+        'Symfony\\Component\\Console\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
-        'Slim\\Psr7\\' => 
+        'Slim\\Psr7\\' =>
         array (
             0 => __DIR__ . '/..' . '/slim/psr7/src',
         ),
-        'Qferrer\\Mjml\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/qferr/mjml-php/src',
-        ),
-        'Psr\\Http\\Message\\' => 
+        'Psr\\Http\\Message\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
             1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'Psr\\Http\\Client\\' => 
+        'Psr\\Http\\Client\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
         ),
-        'Psr\\Container\\' => 
+        'Psr\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'PhpParser\\' => 
+        'PhpParser\\' =>
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
         ),
-        'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' => 
+        'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' =>
         array (
             0 => __DIR__ . '/..' . '/dealerdirect/phpcodesniffer-composer-installer/src',
         ),
-        'ML\\JsonLD\\' => 
+        'ML\\JsonLD\\' =>
         array (
             0 => __DIR__ . '/..' . '/ml/json-ld',
         ),
-        'Jaybizzle\\CrawlerDetect\\' => 
+        'Jaybizzle\\CrawlerDetect\\' =>
         array (
             0 => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src',
         ),
-        'HtmlParser\\' => 
+        'HtmlParser\\' =>
         array (
             0 => __DIR__ . '/..' . '/oscarotero/html-parser/src',
         ),
-        'Gettext\\Languages\\' => 
+        'Gettext\\Languages\\' =>
         array (
             0 => __DIR__ . '/..' . '/gettext/languages/src',
         ),
-        'Gettext\\' => 
+        'Gettext\\' =>
         array (
             0 => __DIR__ . '/..' . '/gettext/translator/src',
             1 => __DIR__ . '/..' . '/gettext/gettext/src',
         ),
-        'Fig\\Http\\Message\\' => 
+        'Fig\\Http\\Message\\' =>
         array (
             0 => __DIR__ . '/..' . '/fig/http-message-util/src',
         ),
-        'Embed\\' => 
+        'Embed\\' =>
         array (
             0 => __DIR__ . '/..' . '/embed/embed/src',
         ),
-        'DeepCopy\\' => 
+        'DeepCopy\\' =>
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
-        'ConventionalChangelog\\' => 
+        'ConventionalChangelog\\' =>
         array (
             0 => __DIR__ . '/..' . '/marcocesarato/php-conventional-changelog/src',
         ),
-        'Composer\\CaBundle\\' => 
+        'Composer\\CaBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/composer/ca-bundle/src',
         ),
     );
 
     public static $prefixesPsr0 = array (
-        'P' => 
+        'P' =>
         array (
-            'Parsedown' => 
+            'Parsedown' =>
             array (
                 0 => __DIR__ . '/..' . '/erusev/parsedown',
             ),
         ),
-        'M' => 
+        'M' =>
         array (
-            'ML\\IRI' => 
+            'ML\\IRI' =>
             array (
                 0 => __DIR__ . '/..' . '/ml/iri',
             ),
