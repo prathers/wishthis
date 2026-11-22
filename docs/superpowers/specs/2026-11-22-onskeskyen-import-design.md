@@ -151,7 +151,7 @@ language segment (`/da/`) and query string, matching
 | `description` | `wishes.description` |
 | `quantity` > 1 | appended to the description as a translated line, e.g. "Antal: 2" (wishthis has no quantity field) |
 | `deletedAt` set | wish skipped entirely |
-| returned order | insertion order, so the list looks the same |
+| returned order | not preserved: wishthis sorts by priority, url, title (`Wishlist.php:128`) |
 | `photos[0]` | `wishes.image` (empty if none) |
 | `price` > 0 | `products.price` for the wish (same `REPLACE INTO products` as `src/api/wishes.php`) and `is_purchasable` set; `0` means no price |
 | `currency` | not stored. wishthis has no per-wish currency, so prices are taken as-is. |
