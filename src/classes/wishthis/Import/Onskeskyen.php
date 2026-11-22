@@ -149,8 +149,12 @@ final class Onskeskyen
 
         foreach ((array) ($json['errors'] ?? []) as $error) {
             $message = \is_array($error) ? (string) ($error['message'] ?? '') : '';
+            $code    = \is_array($error) ? (int) ($error['extensions']['code'] ?? 0) : 0;
 
-            if (\preg_match('/not found|forbidden|access|private|permission/i', $message)) {
+            if (
+                   \in_array($code, [403, 404], true)
+                || \preg_match('/not found|does not exist|forbidden|access|private|permission/i', $message)
+            ) {
                 throw new OnskeskyenException($message, OnskeskyenException::NOT_FOUND);
             }
         }
@@ -259,11 +263,12 @@ final class Onskeskyen
         $title = self::cleanText((string) ($raw['title'] ?? ''));
         $title = \mb_substr($title, 0, self::TITLE_MAX_LENGTH);
 
-        $url = \trim((string) ($raw['url'] ?? ''));
-        $url = \preg_match('#^https?://#i', $url) ? \substr($url, 0, self::URL_MAX_LENGTH) : '';
+        $url = self::safeUrl((string) ($raw['url'] ?? ''), '#^https?://#i');
+        $url = \substr($url, 0, self::URL_MAX_LENGTH);
 
         $photos = $raw['photos'] ?? [];
         $image  = \is_array($photos) && isset($photos[0]) && \is_string($photos[0]) ? $photos[0] : '';
+        $image  = self::safeUrl($image, '#^https://#i');
 
         $price = (float) ($raw['price'] ?? 0);
 
@@ -276,6 +281,22 @@ final class Onskeskyen
             'price'       => $price > 0 ? $price : null,
             'quantity'    => \max(1, (int) ($raw['quantity'] ?? 1)),
         ];
+    }
+
+    /**
+     * wishthis prints wish URLs into HTML attributes unescaped (e.g. `<img src>`),
+     * so only accept URLs with the given scheme and without characters that could
+     * break out of an attribute.
+     */
+    private static function safeUrl(string $url, string $schemePattern): string
+    {
+        $url = \trim($url);
+
+        if (!\preg_match($schemePattern, $url) || \preg_match('/[\s"\'<>`\\\\]/', $url)) {
+            return '';
+        }
+
+        return $url;
     }
 
     private static function cleanText(string $text): string

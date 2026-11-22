@@ -113,6 +113,27 @@ final class OnskeskyenImportTest extends TestCase
         $this->assertSame(128, \mb_strlen(Onskeskyen::mapWish(['id' => 'w', 'title' => \str_repeat('é', 200)])['title']));
     }
 
+    public function testMapWishRejectsUrlsThatCouldBreakOutOfAttributes(): void
+    {
+        foreach (
+            [
+                'https://img.gowish.com/a.jpg" onerror="alert(1)',
+                "https://img.gowish.com/a.jpg' x='",
+                'https://img.gowish.com/<script>.jpg',
+                'https://img.gowish.com/a b.jpg',
+                'javascript:alert(1)',
+                'http://img.gowish.com/plain-http.jpg',
+            ] as $bad
+        ) {
+            $wish = Onskeskyen::mapWish(['id' => 'w', 'title' => 't', 'url' => $bad, 'photos' => [$bad]]);
+            $this->assertSame('', $wish['image'], $bad);
+
+            if (!\str_starts_with($bad, 'http://')) {
+                $this->assertSame('', $wish['url'], $bad);
+            }
+        }
+    }
+
     public function testFetchPaginatesAndSkipsDeleted(): void
     {
         $sent      = [];
@@ -143,6 +164,25 @@ final class OnskeskyenImportTest extends TestCase
         $sent = [];
         $body = '{"errors":[{"message":"Wishlist not found"}],"data":null}';
         (new Onskeskyen($this->fakeTransport([$body], $sent)))->fetch('X');
+    }
+
+    public function testFetchNotFoundFromGraphqlErrorCode(): void
+    {
+        foreach (
+            [
+                '{"errors":[{"message":"Wishlist with id \"{id}\" does not exists","path":["wishlist"],"extensions":{"code":404,"serviceName":"wishlists"}}],"data":null}',
+                '{"errors":[{"message":"Nope","extensions":{"code":403}}],"data":null}',
+            ] as $body
+        ) {
+            $sent = [];
+
+            try {
+                (new Onskeskyen($this->fakeTransport([$body], $sent)))->fetch('X');
+                $this->fail('no exception for ' . $body);
+            } catch (OnskeskyenException $e) {
+                $this->assertSame(OnskeskyenException::NOT_FOUND, $e->getCode(), $body);
+            }
+        }
     }
 
     public function testMalformedResponsesThrowUnavailable(): void
