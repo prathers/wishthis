@@ -108,9 +108,21 @@ final class OnskeskyenImportTest extends TestCase
             $this->assertSame('', Onskeskyen::mapWish(['id' => 'w', 'title' => 't', 'url' => $bad])['url'], $bad);
         }
 
-        $long = 'https://shop.example/' . \str_repeat('a', 300);
-        $this->assertSame(255, \strlen(Onskeskyen::mapWish(['id' => 'w', 'title' => 't', 'url' => $long])['url']));
         $this->assertSame(128, \mb_strlen(Onskeskyen::mapWish(['id' => 'w', 'title' => \str_repeat('é', 200)])['title']));
+    }
+
+    public function testMapWishMovesOverlongUrlIntoDescription(): void
+    {
+        foreach (['https://shop.example/' . \str_repeat('a', 300), 'https://ab.dk/' . \str_repeat('ø', 200)] as $long) {
+            $wish = Onskeskyen::mapWish(['id' => 'w', 'title' => 't', 'description' => 'Note', 'url' => $long]);
+
+            $this->assertSame('', $wish['url']);
+            $this->assertSame("Note\n\n" . $long, $wish['description']);
+            $this->assertNotFalse(\json_encode($wish));
+        }
+
+        $wish = Onskeskyen::mapWish(['id' => 'w', 'title' => 't', 'url' => 'https://shop.example/' . \str_repeat('a', 300)]);
+        $this->assertSame('https://shop.example/' . \str_repeat('a', 300), $wish['description']);
     }
 
     public function testMapWishRejectsUrlsThatCouldBreakOutOfAttributes(): void
@@ -243,6 +255,66 @@ final class OnskeskyenImportTest extends TestCase
         ))->fetch('X');
         $this->assertSame(5, $calls);
         $this->assertCount(500, $result['wishes']);
+    }
+
+    public function testPaginationHandlesStringCursorsAndDuplicates(): void
+    {
+        $page = function (string $id, $nextCursor): string {
+            return \json_encode(
+                [
+                    'data' => [
+                        'wishlist' => [
+                            'id'     => 'X',
+                            'title'  => 't',
+                            'wishes' => ['totalCount' => 1000, 'nextCursor' => $nextCursor, 'data' => [['id' => $id, 'title' => 't']]],
+                        ],
+                    ],
+                ]
+            );
+        };
+
+        /** A repeating string cursor stops after it is seen again; duplicate wishes are dropped. */
+        $calls  = 0;
+        $result = (new Onskeskyen(
+            function () use (&$calls, $page) {
+                ++$calls;
+
+                return ['status' => 200, 'body' => $page('same', '100')];
+            }
+        ))->fetch('X');
+        $this->assertSame(2, $calls);
+        $this->assertSame(['same'], \array_column($result['wishes'], 'id'));
+
+        /** A cursor that isn't a positive number stops the loop instead of refetching page 1. */
+        $calls  = 0;
+        $result = (new Onskeskyen(
+            function () use (&$calls, $page) {
+                ++$calls;
+
+                return ['status' => 200, 'body' => $page('w' . $calls, 'abc')];
+            }
+        ))->fetch('X');
+        $this->assertSame(1, $calls);
+
+        /** Pages of deleted wishes still count towards a hard request cap. */
+        $calls = 0;
+        (new Onskeskyen(
+            function () use (&$calls) {
+                ++$calls;
+
+                return [
+                    'status' => 200,
+                    'body'   => \json_encode(
+                        ['data' => ['wishlist' => ['id' => 'X', 'title' => 't', 'wishes' => [
+                            'totalCount' => 100000,
+                            'nextCursor' => $calls * 100,
+                            'data'       => [['id' => 'd' . $calls, 'title' => 't', 'deletedAt' => '2026-01-01']],
+                        ]]]]
+                    ),
+                ];
+            }
+        ))->fetch('X');
+        $this->assertLessThanOrEqual(Onskeskyen::MAX_WISHES / Onskeskyen::PAGE_SIZE + 1, $calls);
     }
 
     private function fixture(string $name): string

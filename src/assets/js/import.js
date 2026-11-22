@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', function () {
     /** The link the preview was fetched from; the import re-fetches it on the server. */
     let fetchedUrl = '';
 
+    /** Requests take seconds (the server asks GoWish); ignore repeated clicks/Enter meanwhile. */
+    let busy = false;
+
     /** Server messages come HTML-encoded from __(); decode them to plain text. */
     function decode(html) {
         return new DOMParser().parseFromString(html, 'text/html').documentElement.textContent;
@@ -106,6 +109,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     fetchForm.addEventListener('submit', function (event) {
         event.preventDefault();
+
+        if (busy) {
+            return;
+        }
+
+        busy = true;
         hideError();
 
         preview.hidden = true;
@@ -126,11 +135,20 @@ document.addEventListener('DOMContentLoaded', function () {
             renderPreview(response.data);
         })
         .catch(() => showError(strings.genericError))
-        .finally(() => fetchButton.classList.remove('loading', 'disabled'));
+        .finally(function () {
+            busy = false;
+            fetchButton.classList.remove('loading', 'disabled');
+        });
     });
 
     submitForm.addEventListener('submit', function (event) {
         event.preventDefault();
+
+        if (busy || submitButton.disabled) {
+            return;
+        }
+
+        busy = true;
         hideError();
 
         const formData = new FormData();
@@ -149,15 +167,18 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(function (response) {
             if (response.error) {
                 showError(decode(response.error));
+                busy = false;
                 submitButton.classList.remove('loading', 'disabled');
 
                 return;
             }
 
+            /** Stay busy: the page is navigating away. */
             window.location.href = '/index.php?page=wishlists&id=' + encodeURIComponent(response.data.wishlistId);
         })
         .catch(function () {
             showError(strings.genericError);
+            busy = false;
             submitButton.classList.remove('loading', 'disabled');
         });
     });

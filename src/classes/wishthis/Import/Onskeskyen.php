@@ -64,11 +64,13 @@ final class Onskeskyen
     {
         $title       = '';
         $wishes      = [];
+        $seenWishIds = [];
         $rawCount    = 0;
         $cursor      = 0;
         $seenCursors = [];
+        $maxRequests = \intdiv(self::MAX_WISHES, self::PAGE_SIZE) + 1;
 
-        while (true) {
+        while (\count($seenCursors) < $maxRequests) {
             $seenCursors[] = $cursor;
 
             $list = $this->requestPage($listId, $cursor);
@@ -84,8 +86,9 @@ final class Onskeskyen
                 $rawCount++;
                 $wish = self::mapWish($raw);
 
-                if (null !== $wish) {
-                    $wishes[] = $wish;
+                if (null !== $wish && !isset($seenWishIds[$wish['id']])) {
+                    $seenWishIds[$wish['id']] = true;
+                    $wishes[]                 = $wish;
                 }
 
                 if (\count($wishes) >= self::MAX_WISHES) {
@@ -94,10 +97,11 @@ final class Onskeskyen
             }
 
             $next  = $page['nextCursor'] ?? null;
+            $next  = \is_int($next) || (\is_string($next) && \ctype_digit($next)) ? (int) $next : 0;
             $total = (int) ($page['totalCount'] ?? 0);
 
             if (
-                   empty($next)
+                   $next <= 0
                 || \in_array($next, $seenCursors, true)
                 || $rawCount >= $total
                 || empty($page['data'])
@@ -105,7 +109,7 @@ final class Onskeskyen
                 break;
             }
 
-            $cursor = (int) $next;
+            $cursor = $next;
         }
 
         return [
@@ -263,8 +267,14 @@ final class Onskeskyen
         $title = self::cleanText((string) ($raw['title'] ?? ''));
         $title = \mb_substr($title, 0, self::TITLE_MAX_LENGTH);
 
-        $url = self::safeUrl((string) ($raw['url'] ?? ''), '#^https?://#i');
-        $url = \substr($url, 0, self::URL_MAX_LENGTH);
+        $url         = self::safeUrl((string) ($raw['url'] ?? ''), '#^https?://#i');
+        $description = \trim((string) ($raw['description'] ?? ''));
+
+        /** Too long for `wishes.url`: cutting it would break the link (and possibly UTF-8), so keep it in the note. */
+        if (\strlen($url) > self::URL_MAX_LENGTH) {
+            $description = '' === $description ? $url : $description . "\n\n" . $url;
+            $url         = '';
+        }
 
         $photos = $raw['photos'] ?? [];
         $image  = \is_array($photos) && isset($photos[0]) && \is_string($photos[0]) ? $photos[0] : '';
@@ -275,7 +285,7 @@ final class Onskeskyen
         return [
             'id'          => (string) ($raw['id'] ?? ''),
             'title'       => $title,
-            'description' => \trim((string) ($raw['description'] ?? '')),
+            'description' => $description,
             'url'         => $url,
             'image'       => $image,
             'price'       => $price > 0 ? $price : null,
