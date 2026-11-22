@@ -1,0 +1,2 @@
+# Not part of the web app; never serve it over HTTP.
+Require all denied

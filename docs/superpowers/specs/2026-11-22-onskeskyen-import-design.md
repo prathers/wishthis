@@ -19,7 +19,7 @@ work reliably now. It does not need to keep working for years or stay in sync.
 ## Goals
 
 - A logged-in user pastes an Ønskeskyen wishlist link, e.g.
-  `https://onskeskyen.dk/da/wishlists/Xb9vpdulcGnMQWWu`.
+  `https://onskeskyen.dk/da/wishlists/<list-id>`.
 - They see a preview of the wishes (title, image, price, shop link) and can
   untick any they don't want.
 - "Import" creates a **new** wishlist in their account (name prefilled with the
@@ -170,10 +170,10 @@ Mine ønskelister → [Importér fra Ønskeskyen]
   │ [ https://onskeskyen.dk/da/wishlists/…   ] [Hent] │
   └───────────────────────────────────────────────┘
   ↓ preview
-  Navn på ny ønskeliste: [ Eas ønsker            ]
+  Navn på ny ønskeliste: [ Mine ønsker           ]
   19 ønsker fundet                       [x] Vælg alle
-  [x] [img] Børneflaske - 350ML - Blush   199 kr.  nordicdrop.dk
-  [x] [img] Denne skoletaske fra Beckmann …    –   (intet link)
+  [x] [img] Brætspil                    299 kr.  shop.example
+  [x] [img] Brugt skoletaske …              –   (intet link)
   …
                               [Importér 19 ønsker]
   ↓
