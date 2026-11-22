@@ -1,0 +1,17 @@
+{
+    "data": {
+        "wishlist": {
+            "id": "List1",
+            "title": "Test list",
+            "wishes": {
+                "totalCount": 4,
+                "nextCursor": 3,
+                "data": [
+                    {"id": "a1", "title": "Board game", "description": "The Nordic edition", "quantity": 1, "url": "https://shop.example/board-game", "index": 4, "deletedAt": null, "price": 299.95, "currency": "DKK", "photos": ["https://img.gowish.com/test/a1.jpg"]},
+                    {"id": "a2", "title": "Second-hand school bag", "description": null, "quantity": 1, "url": null, "index": 3, "deletedAt": null, "price": 0, "currency": "DKK", "photos": ["https://img.gowish.com/test/a2.jpg"]},
+                    {"id": "a3", "title": "Old wish", "description": null, "quantity": 1, "url": "https://shop.example/old", "index": 2, "deletedAt": "2026-10-01T10:00:00.000Z", "price": 50, "currency": "DKK", "photos": []}
+                ]
+            }
+        }
+    }
+}

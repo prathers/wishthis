@@ -1,0 +1,15 @@
+{
+    "data": {
+        "wishlist": {
+            "id": "List1",
+            "title": "Test list",
+            "wishes": {
+                "totalCount": 4,
+                "nextCursor": 0,
+                "data": [
+                    {"id": "a4", "title": "Jump rope", "description": "Mint colour", "quantity": 2, "url": "https://shop.example/jump-rope", "index": 1, "deletedAt": null, "price": 99.95, "currency": "DKK", "photos": ["https://img.gowish.com/test/a4.jpg"]}
+                ]
+            }
+        }
+    }
+}

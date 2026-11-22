@@ -18,6 +18,199 @@ final class Onskeskyen
 
     private const URL_MAX_LENGTH = 255;
 
+    public const API_URL = 'https://api.gowish.com/graphql';
+
+    public const PAGE_SIZE = 100;
+
+    public const MAX_WISHES = 500;
+
+    private const TIMEOUT_SECONDS = 10;
+
+    private const USER_AGENT = 'Mozilla/5.0 (compatible; wishthis wishlist import)';
+
+    /** Only the fields we import. Deliberately no reservations (other people's names). */
+    private const QUERY = 'query getWishlistForImport($id: ID!, $cursor: Int, $limit: Int) {
+  wishlist(id: $id) {
+    id
+    title
+    wishes(input: {cursor: $cursor, limit: $limit}) {
+      data { id title description quantity url index deletedAt price currency photos }
+      totalCount
+      nextCursor
+    }
+  }
+}';
+
+    /** @var \Closure(string): array{status: int, body: string|false} */
+    private \Closure $transport;
+
+    /**
+     * @param ?\Closure $transport `function (string $jsonBody): array{status: int, body: string|false}`.
+     *                             Defaults to a cURL POST to GoWish.
+     */
+    public function __construct(?\Closure $transport = null)
+    {
+        $this->transport = $transport ?? \Closure::fromCallable([self::class, 'curlTransport']);
+    }
+
+    /**
+     * Fetches a public wishlist with its (mapped, non-deleted) wishes.
+     *
+     * @return array{title: string, wishes: list<array>}
+     *
+     * @throws OnskeskyenException
+     */
+    public function fetch(string $listId): array
+    {
+        $title       = '';
+        $wishes      = [];
+        $rawCount    = 0;
+        $cursor      = 0;
+        $seenCursors = [];
+
+        while (true) {
+            $seenCursors[] = $cursor;
+
+            $list = $this->requestPage($listId, $cursor);
+
+            $title = \is_string($list['title'] ?? null) ? $list['title'] : '';
+            $page  = $list['wishes'];
+
+            foreach ($page['data'] as $raw) {
+                if (!\is_array($raw)) {
+                    throw new OnskeskyenException('Unexpected wish entry', OnskeskyenException::UNAVAILABLE);
+                }
+
+                $rawCount++;
+                $wish = self::mapWish($raw);
+
+                if (null !== $wish) {
+                    $wishes[] = $wish;
+                }
+
+                if (\count($wishes) >= self::MAX_WISHES) {
+                    break 2;
+                }
+            }
+
+            $next  = $page['nextCursor'] ?? null;
+            $total = (int) ($page['totalCount'] ?? 0);
+
+            if (
+                   empty($next)
+                || \in_array($next, $seenCursors, true)
+                || $rawCount >= $total
+                || empty($page['data'])
+            ) {
+                break;
+            }
+
+            $cursor = (int) $next;
+        }
+
+        return [
+            'title'  => $title,
+            'wishes' => $wishes,
+        ];
+    }
+
+    /**
+     * @return array{title?: mixed, wishes: array{data: array, nextCursor?: mixed, totalCount?: mixed}}
+     *
+     * @throws OnskeskyenException
+     */
+    private function requestPage(string $listId, int $cursor): array
+    {
+        $body = \json_encode(
+            [
+                'query'     => self::QUERY,
+                'variables' => [
+                    'id'     => $listId,
+                    'cursor' => $cursor,
+                    'limit'  => self::PAGE_SIZE,
+                ],
+            ]
+        );
+
+        $response = ($this->transport)((string) $body);
+
+        if (200 !== ($response['status'] ?? 0) || !\is_string($response['body'] ?? null)) {
+            throw new OnskeskyenException(
+                'GoWish answered HTTP ' . ($response['status'] ?? 0),
+                OnskeskyenException::UNAVAILABLE
+            );
+        }
+
+        $json = \json_decode($response['body'], true);
+
+        if (!\is_array($json)) {
+            throw new OnskeskyenException('GoWish answered with invalid JSON', OnskeskyenException::UNAVAILABLE);
+        }
+
+        foreach ((array) ($json['errors'] ?? []) as $error) {
+            $message = \is_array($error) ? (string) ($error['message'] ?? '') : '';
+
+            if (\preg_match('/not found|forbidden|access|private|permission/i', $message)) {
+                throw new OnskeskyenException($message, OnskeskyenException::NOT_FOUND);
+            }
+        }
+
+        if (!\is_array($json['data'] ?? null) || !\array_key_exists('wishlist', $json['data'])) {
+            $message = isset($json['errors']) ? \json_encode($json['errors']) : 'missing data.wishlist';
+
+            throw new OnskeskyenException('Unexpected GoWish response: ' . $message, OnskeskyenException::UNAVAILABLE);
+        }
+
+        $list = $json['data']['wishlist'];
+
+        if (null === $list) {
+            throw new OnskeskyenException('Wishlist not found', OnskeskyenException::NOT_FOUND);
+        }
+
+        if (!\is_array($list) || !\is_array($list['wishes'] ?? null) || !\is_array($list['wishes']['data'] ?? null)) {
+            throw new OnskeskyenException('Unexpected GoWish response shape', OnskeskyenException::UNAVAILABLE);
+        }
+
+        return $list;
+    }
+
+    /**
+     * @return array{status: int, body: string|false}
+     */
+    private static function curlTransport(string $jsonBody): array
+    {
+        $ch = \curl_init(self::API_URL);
+
+        \curl_setopt_array(
+            $ch,
+            [
+                \CURLOPT_POST           => true,
+                \CURLOPT_POSTFIELDS     => $jsonBody,
+                \CURLOPT_RETURNTRANSFER => true,
+                \CURLOPT_TIMEOUT        => self::TIMEOUT_SECONDS,
+                \CURLOPT_CONNECTTIMEOUT => self::TIMEOUT_SECONDS,
+                \CURLOPT_USERAGENT      => self::USER_AGENT,
+                \CURLOPT_HTTPHEADER     => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Origin: https://onskeskyen.dk',
+                ],
+            ]
+        );
+
+        $body   = \curl_exec($ch);
+        $status = (int) \curl_getinfo($ch, \CURLINFO_HTTP_CODE);
+
+        if (false === $body) {
+            \error_log('Ønskeskyen import: cURL error: ' . \curl_error($ch));
+        }
+
+        return [
+            'status' => $status,
+            'body'   => \is_string($body) ? $body : false,
+        ];
+    }
+
     /**
      * Returns the wishlist ID from an Ønskeskyen/GoWish wishlist link, or null.
      */
