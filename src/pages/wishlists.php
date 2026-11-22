@@ -26,6 +26,13 @@ $page->navigation();
 
         <?= $page->messages() ?>
 
+        <p>
+            <a class="ui basic button" href="<?= Page::PAGE_IMPORT ?>">
+                <i class="download icon"></i>
+                <?= __('Import from Ønskeskyen') ?>
+            </a>
+        </p>
+
         <div class="ui segment">
             <div class="ui form">
                 <div class="field">

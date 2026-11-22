@@ -2,6 +2,7 @@
 
 ### Added
 
+-   Import a wishlist from Ønskeskyen (onskeskyen.dk / GoWish) into a new wishlist
 -   Textfield for public wishlist url (#220)
 -   SQLite support (#67)
 -   PHP 8.4 support

@@ -146,3 +146,73 @@ msgid "%d more subscriber needed"
 msgid_plural "%d more subscribers needed"
 msgstr[0] "%d abonnent mere er nødvendig"
 msgstr[1] "%d abonnenter mere er nødvendige"
+
+# Ønskeskyen import
+
+#: pages/import.php
+msgid "Import from Ønskeskyen"
+msgstr "Importér fra Ønskeskyen"
+
+#: pages/import.php
+msgid "Link to your wishlist on Ønskeskyen"
+msgstr "Link til din ønskeliste på Ønskeskyen"
+
+#: pages/import.php
+msgid "Fetch"
+msgstr "Hent"
+
+#: pages/import.php
+msgid "Name of the new wishlist"
+msgstr "Navn på ny ønskeliste"
+
+#: pages/import.php
+msgid "%d wishes found"
+msgstr "%d ønsker fundet"
+
+#: pages/import.php
+msgid "Select all"
+msgstr "Vælg alle"
+
+#: pages/import.php
+msgid "no link"
+msgstr "intet link"
+
+#: pages/import.php
+msgid "Import %d wishes"
+msgstr "Importér %d ønsker"
+
+#: pages/import.php
+msgid "This list has no wishes."
+msgstr "Listen har ingen ønsker."
+
+#: api/import.php
+msgid "Quantity: %d"
+msgstr "Antal: %d"
+
+#: api/import.php
+msgid "You need to be logged in to import a wishlist."
+msgstr "Du skal være logget ind for at importere en ønskeliste."
+
+#: api/import.php
+msgid "That doesn't look like an Ønskeskyen wishlist link."
+msgstr "Det ligner ikke et link til en ønskeliste på Ønskeskyen."
+
+#: api/import.php
+msgid "We couldn't find that list. Is it set to public on Ønskeskyen?"
+msgstr "Vi kunne ikke finde listen. Er den sat til offentlig på Ønskeskyen?"
+
+#: api/import.php
+msgid "Ønskeskyen didn't answer as expected. Try again later."
+msgstr "Ønskeskyen svarede ikke som forventet. Prøv igen senere."
+
+#: api/import.php
+msgid "The list changed on Ønskeskyen. Please fetch it again."
+msgstr "Listen er ændret på Ønskeskyen. Hent den venligst igen."
+
+#: api/import.php
+msgid "Choose at least one wish to import."
+msgstr "Vælg mindst ét ønske at importere."
+
+#: api/import.php
+msgid "The import failed. Nothing was saved."
+msgstr "Importen mislykkedes. Intet blev gemt."

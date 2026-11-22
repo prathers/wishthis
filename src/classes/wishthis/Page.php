@@ -31,6 +31,7 @@ class Page
     public const URL_REPOSITORY_CHANGELOG = self::URL_REPOSITORY . '/commits/production';
     public const PAGE_CHANGELOG       = '/index.php?page=changelog';
     public const PAGE_HOME            = '/index.php?page=home';
+    public const PAGE_IMPORT          = '/index.php?page=import';
     public const PAGE_INSTALL         = '/index.php?page=install';
     public const PAGE_LOGIN_AS        = '/index.php?page=login-as';
     public const PAGE_LOGIN           = '/index.php?page=login';
