@@ -204,6 +204,22 @@
     text-overflow: ellipsis;
 }
 
+/** Translucent bar behind the title so it stays readable on dark images */
+.wishlist .ui:not(.horizontal).card > .content > .header {
+    margin: calc(var(--padding) * -0.4) calc(var(--padding) * -0.5) 0;
+    padding: calc(var(--padding) * 0.4) calc(var(--padding) * 0.5);
+
+    border-radius: 0.4em;
+    background-color: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+@media (prefers-color-scheme: dark) {
+    .wishlist .ui:not(.horizontal).card > .content > .header {
+        background-color: rgba(27, 28, 29, 0.72);
+    }
+}
+
 .wishlist .ui.card > .content > .header > .ui.label {
     float: right;
     line-height: inherit;
